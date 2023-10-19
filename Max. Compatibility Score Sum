@@ -1,0 +1,41 @@
+class Solution {
+    public int maxCompatibilitySum(int[][] students, int[][] mentors) {
+        int m = students.length;
+        int n = students[0].length;
+        int[] studentMentorMatch = new int[m];
+        boolean[] used = new boolean[m];
+        int[] maxScore = {0};
+        
+        // Recursive function to find the maximum score
+        maxCompatibility(students, mentors, studentMentorMatch, used, 0, 0, maxScore);
+        
+        return maxScore[0];
+    }
+    
+    private void maxCompatibility(int[][] students, int[][] mentors, int[] studentMentorMatch, boolean[] used, int studentIdx, int score, int[] maxScore) {
+        if (studentIdx == students.length) {
+            maxScore[0] = Math.max(maxScore[0], score);
+            return;
+        }
+        
+        for (int mentorIdx = 0; mentorIdx < mentors.length; mentorIdx++) {
+            if (!used[mentorIdx]) {
+                used[mentorIdx] = true;
+                studentMentorMatch[studentIdx] = mentorIdx;
+                int newScore = calculateCompatibilityScore(students[studentIdx], mentors[mentorIdx]);
+                maxCompatibility(students, mentors, studentMentorMatch, used, studentIdx + 1, score + newScore, maxScore);
+                used[mentorIdx] = false;
+            }
+        }
+    }
+    
+    private int calculateCompatibilityScore(int[] studentAnswers, int[] mentorAnswers) {
+        int score = 0;
+        for (int i = 0; i < studentAnswers.length; i++) {
+            if (studentAnswers[i] == mentorAnswers[i]) {
+                score++;
+            }
+        }
+        return score;
+    }
+}
